@@ -78,6 +78,13 @@
             column: null
           };
         }
+      },
+
+      highlightDates: {
+        type: Array,
+        default() {
+          return [];
+        }
       }
     },
 
@@ -170,6 +177,17 @@
 
             cell.disabled = typeof disabledDate === 'function' && disabledDate(new Date(time));
 
+            // 设置高光的日期
+            cell.highlight = false;
+            if (this.highlightDates.length && cell.type === 'normal') {
+              for (let item of this.highlightDates) {
+                if (item === cell.text) {
+                  cell.highlight = true;
+                  console.log(item, cell);
+                }
+              }
+            }
+
             this.$set(row, this.showWeekNumber ? j + 1 : j, cell);
           }
 
@@ -186,7 +204,6 @@
         }
 
         rows.firstDayPosition = firstDayPosition;
-
         return rows;
       }
     },
@@ -260,6 +277,11 @@
 
         if (cell.disabled) {
           classes.push('disabled');
+        }
+
+        // 设置高光css class
+        if (cell.highlight) {
+          classes.push('highlight');
         }
 
         return classes.join(' ');
@@ -445,3 +467,8 @@
     }
   };
 </script>
+<style scoped>
+  .el-date-table td.highlight{
+    background: beige;
+  }
+</style>

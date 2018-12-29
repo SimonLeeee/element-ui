@@ -89,7 +89,8 @@
               :week="week"
               :selection-mode="selectionMode"
               :first-day-of-week="firstDayOfWeek"
-              :disabled-date="disabledDate">
+              :disabled-date="disabledDate"
+              :highlightDates="highlightDates">
             </date-table>
             <year-table
               ref="yearTable"
@@ -220,6 +221,7 @@
           this.month = 11;
           this.year--;
         }
+        this.emitPanelChanged();
       },
 
       nextMonth() {
@@ -228,6 +230,7 @@
           this.month = 0;
           this.year++;
         }
+        this.emitPanelChanged();
       },
 
       nextYear() {
@@ -238,6 +241,7 @@
           this.date.setFullYear(this.year);
           this.resetDate();
         }
+        this.emitPanelChanged();
       },
 
       prevYear() {
@@ -248,6 +252,14 @@
           this.date.setFullYear(this.year);
           this.resetDate();
         }
+        this.emitPanelChanged();
+      },
+
+      emitPanelChanged() {
+        this.$emit('panel-changed', {
+          year: this.year,
+          month: (this.month + 1)
+        });
       },
 
       handleShortcutClick(shortcut) {
@@ -375,7 +387,8 @@
         showWeekNumber: false,
         timePickerVisible: false,
         width: 0,
-        format: ''
+        format: '',
+        highlightDates: []
       };
     },
 

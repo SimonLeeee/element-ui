@@ -227,7 +227,8 @@ export default {
     rangeSeparator: {
       default: ' - '
     },
-    pickerOptions: {}
+    pickerOptions: {},
+    highlightDates: {}
   },
 
   components: { ElInput },
@@ -501,6 +502,16 @@ export default {
         this.refInput.setSelectionRange(start, end);
         this.refInput.focus();
       });
+
+      // 监听日期选择panel面板的变化
+      this.picker.$on('panel-changed', (val)=>{
+        this.$emit('panel-changed', val);
+      });
+
+      // 监听highlightDates 通知picker组件更新高亮日期
+      this.unwatchPickerHighlight = this.$watch('highlightDates', () => {
+        this.picker.highlightDates = this.highlightDates;
+      }, { deep: true });
     },
 
     unmountPicker() {
@@ -509,6 +520,9 @@ export default {
         this.picker.$off();
         if (typeof this.unwatchPickerOptions === 'function') {
           this.unwatchPickerOptions();
+        }
+        if (typeof this.unwatchPickerHighlight === 'function') {
+          this.unwatchPickerHighlight();
         }
         this.picker.$el.parentNode.removeChild(this.picker.$el);
       }
